@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useData } from "../hooks/useData";
+
 function ActivityFinder() { // Fetches a random activity
 
     const [participants, setParticipants] = useState(1);
