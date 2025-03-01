@@ -38,34 +38,67 @@
 
 
 
-import { useState, useEffect } from "react";
-import { useDataReducer } from "../hooks/useDataReducer";
+// import { useState, useEffect } from "react";
+// import { useDataReducer } from "../hooks/useDataReducer";
 
+
+// const currencies = ['USD', 'AUD', 'NZD', 'GBP', 'EUR', 'SGD'];
+
+// function BitcoinRates() {
+//     const [currency, setCurrency] = useState(currencies[0]);
+
+//     const btcResponse = useDataReducer(`https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=${currency}`)
+
+//     const btcPrice = !btcResponse.loading && btcResponse.data ? btcResponse.data.bitcoin[currency.toLowerCase()] : 0 
+
+    
+
+//     const options = currencies.map(curr => <option value={curr} key={curr}>{curr}</option>);
+//     return (
+//         <div className="BitcoinRates componentBox">
+//             <h3>Bitcoin Exchange Rate</h3>
+//             <label>Choose currency:
+//                 <select value={currency} onChange={e => setCurrency(e.target.value)}>
+//                     {options}
+//                 </select>
+//             </label>
+//             <div>1BTC is worth {btcPrice} {currency} </div>
+//             <div>{btcResponse.error}</div>
+//         </div>
+//     )
+// }
+
+// export default BitcoinRates
+
+
+// LAB 5 
+
+import { useState } from "react";
+import { useData } from "../hooks/useData";
+import CustomSelect from "./CustomSelect";
+import { Alert, AlertTitle, Box } from "@mui/material";
 
 const currencies = ['USD', 'AUD', 'NZD', 'GBP', 'EUR', 'SGD'];
 
 function BitcoinRates() {
+
     const [currency, setCurrency] = useState(currencies[0]);
+    const btcResponse = useData(`https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=${currency}`, {});
+    const btcPrice = btcResponse.bitcoin ? btcResponse.bitcoin[currency.toLowerCase()] : 0;
 
-    const btcResponse = useDataReducer(`https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=${currency}`)
+    const options = currencies.map(curr => ({value: curr, text: curr}))
 
-    const btcPrice = !btcResponse.loading && btcResponse.data ? btcResponse.data.bitcoin[currency.toLowerCase()] : 0 
-
-    
-
-    const options = currencies.map(curr => <option value={curr} key={curr}>{curr}</option>);
     return (
-        <div className="BitcoinRates componentBox">
+        <Box className="BitcoinRates" sx={{maxWidth: 300, my: 0, mx: 'auto'}}>
             <h3>Bitcoin Exchange Rate</h3>
-            <label>Choose currency:
-                <select value={currency} onChange={e => setCurrency(e.target.value)}>
-                    {options}
-                </select>
-            </label>
-            <div>1BTC is worth {btcPrice} {currency} </div>
-            <div>{btcResponse.error}</div>
-        </div>
+            <CustomSelect label="Choose a currency:" value={currency} options={options} onCustomChange={(e) => setCurrency(e.target.value)}/>
+            <Alert severity="success" sx={{mt: 3}}>
+                <AlertTitle>BTC Conversion Rate</AlertTitle>
+                1 BTC is worth <strong>{btcPrice} {currency}</strong>
+            </Alert>
+        </Box>
     )
+
 }
 
-export default BitcoinRates
+export default BitcoinRates;
